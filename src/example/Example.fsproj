@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Example.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ExcelProvider" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FWatcher\FWatcher.fsproj" />
+  </ItemGroup>
+</Project>
