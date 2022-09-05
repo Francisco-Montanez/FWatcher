@@ -12,9 +12,15 @@ module Async =
       return f x
     }
 
-type DirectoryChanges = { Count: int; Added: Map<string, byte array>; Deleted: Map<string, byte array>; Modified: Map<string, byte array> }
+type DirectoryChanges =
+  {
+    Count: int
+    Added: Map<string, byte array>
+    Deleted: Map<string, byte array>
+    Modified: Map<string, byte array>
+  }
 
-type Watcher = { PathToWatch: string; Pattern: string }
+type Watcher = { Path: string; Pattern: string }
 
 
 /// <summary>Gets the state of a directory</summary>
@@ -89,14 +95,13 @@ let compareState prev curr =
 let watch action (compareStateInterval: int) watcher =
   async {
     try
-      let! prev = getDirectoryState watcher.PathToWatch watcher.Pattern
+      let! prev = getDirectoryState watcher.Path watcher.Pattern
       let mutable prev' = prev
 
       while true do
         do! Async.Sleep compareStateInterval
 
-        let! curr = getDirectoryState watcher.PathToWatch watcher.Pattern
-
+        let! curr = getDirectoryState watcher.Path watcher.Pattern
         let changes = compareState prev' curr
 
         if changes.Count > 0 then do! action watcher changes
