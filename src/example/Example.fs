@@ -30,23 +30,23 @@ let startWatchers action grid =
     with ex -> printfn $"%s{ex.Message}"; return ()
   }
 
-let prettyprint s (m:Map<string,byte[]>) =
-  for i in m do
-    printfn "\t%s: %A\n" s i.Key
+let prettyPrint directoryChanges =
+  let prettyishPrint change keys =
+    let s = sprintf "\n\n\t%s\n\t\t%s\n" change
+    [ for k in keys do yield s k ]
+    |> String.concat ""
 
-let action watcher directorychanges =
+  match directoryChanges with
+  | directoryChanges when directoryChanges.Count > 0 ->
+    printfn "\nChanges detected:%s%s%s"
+      (prettyishPrint "Added:" directoryChanges.Added.Keys)
+      (prettyishPrint "Deleted:" directoryChanges.Deleted.Keys)
+      (prettyishPrint "Modified:" directoryChanges.Modified.Keys)
+  | o -> ()
+
+let action watcher directoryChanges =
   async {
-    if directorychanges.Count > 0
-    then printfn "Changes detected:\n"
-    if directorychanges.Added.Count > 0
-    then
-      prettyprint "Added" directorychanges.Added
-    if directorychanges.Deleted.Count > 0
-    then
-      prettyprint "Deleted" directorychanges.Deleted
-    if directorychanges.Modified.Count > 0
-    then
-      prettyprint "Modified" directorychanges.Modified
+    prettyPrint directoryChanges
     return ()
   }
 
