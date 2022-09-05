@@ -1,2 +1,0 @@
-
-stop("Error in setup")
