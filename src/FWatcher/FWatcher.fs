@@ -46,7 +46,7 @@ let getDirectoryState dir_path pattern =
         Seq.zip files hash
         |> Map.ofSeq
 
-    with ex -> printfn $"%s{ex.Message}"; return Map.empty
+    with ex -> printfn "%s" ex.Message; return Map.empty
   }
 
 /// <summary>Compare two directory states</summary>
@@ -110,5 +110,5 @@ let watch action (compareStateInterval: int) watcher =
 
       return ()
 
-    with ex -> printfn $"%s{ex.Message}"; return ()
+    with ex -> printfn "%s" ex.Message; return ()
   }

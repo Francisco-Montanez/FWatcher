@@ -6,9 +6,11 @@
     <PackageId>FWatcher</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Francisco-Montanez/FWatcher</PackageProjectUrl>
-    <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
-    <PackageVersion>1.0.0</PackageVersion>
     <PackageReadme>README.md</PackageReadme>
+    <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
+    <PackageTags>fsharp;directory;monitor;watch;fwatcher</PackageTags>
+    <PackageVersion>1.0.0</PackageVersion>
+    <RepositoryUrl>https://github.com/Francisco-Montanez/FWatcher</RepositoryUrl>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
@@ -16,5 +18,8 @@
     <None Include="../../LICENSE" Pack="true" PackagePath=""/>
     <None Include="../../README.md" Pack="true" PackagePath=""/>
     <None Include="../../RELEASE_NOTES.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
   </ItemGroup>
 </Project>
