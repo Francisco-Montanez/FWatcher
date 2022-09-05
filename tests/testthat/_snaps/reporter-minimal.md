@@ -1,4 +1,0 @@
-# reporter as expected
-
-    .FFEESSWS
-
