@@ -2,3 +2,4 @@ src/**/bin
 src/**/obj
 .fake
 .vscode
+Nuget.Config
