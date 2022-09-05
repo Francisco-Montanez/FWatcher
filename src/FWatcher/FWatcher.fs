@@ -12,12 +12,15 @@ module Async =
       return f x
     }
 
+/// <summary>Map of file paths and hashed file bytes of a directory</summary>
+type DirectoryState = Map<string, byte[]>
+
 type DirectoryChanges =
   {
     Count: int
-    Added: Map<string, byte array>
-    Deleted: Map<string, byte array>
-    Modified: Map<string, byte array>
+    Added: DirectoryState
+    Deleted: DirectoryState
+    Modified: DirectoryState
   }
 
 type Watcher = { Path: string; Pattern: string }
@@ -44,7 +47,7 @@ let getDirectoryState dir_path pattern =
 
       return
         Seq.zip files hash
-        |> Map.ofSeq
+        |> DirectoryState
 
     with ex -> printfn "%s" ex.Message; return Map.empty
   }
@@ -52,7 +55,7 @@ let getDirectoryState dir_path pattern =
 /// <summary>Compare two directory states</summary>
 /// <param name="prev">previous directory state</param>
 /// <param name="curr">current directory state</param>
-let compareState prev curr =
+let compareState (prev: DirectoryState) (curr: DirectoryState) =
   let modified =
     seq {
       for KeyValue(k, cv) in curr do
