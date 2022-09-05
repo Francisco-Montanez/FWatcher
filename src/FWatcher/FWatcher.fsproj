@@ -1,12 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageId>FWatcher</PackageId>
-    <Version>0.0.1</Version>
     <Authors>Francisco-Montanez</Authors>
+    <Description>Watch directories and perform action(s) on changes.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>FWatcher</PackageId>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Francisco-Montanez/FWatcher</PackageProjectUrl>
+    <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageReadme>README.md</PackageReadme>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FWatcher.fs" />
+    <Compile Include="FWatcher.fs"/>
+    <None Include="../../LICENSE" Pack="true" PackagePath=""/>
+    <None Include="../../README.md" Pack="true" PackagePath=""/>
+    <None Include="../../RELEASE_NOTES.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
