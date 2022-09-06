@@ -13,3 +13,4 @@
     <ProjectReference Include="..\FWatcher\FWatcher.fsproj" />
   </ItemGroup>
 </Project>
+

@@ -9,7 +9,7 @@
     <PackageReadme>README.md</PackageReadme>
     <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
     <PackageTags>fsharp;directory;monitor;watch;fwatcher</PackageTags>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <RepositoryUrl>https://github.com/Francisco-Montanez/FWatcher</RepositoryUrl>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
