@@ -59,92 +59,70 @@ let watch (action: Watcher -> DirectoryChanges -> Async<unit>) (compareStateInte
 
 ## How to Use
 
-### Example 1
-
 ```fs
-module App
-
-open FWatcher
-
-let watcher = { Path = "../Example/watching"; Pattern = ".*.txt"}
-
-let someActionOnChanges watcher directorychanges =
-  async {
-    printfn "Changes in %s" watcher.Path
-    printfn "Added: %A" directorychanges.Added.keys
-    printfn "Deleted: %A" directorychanges.Deleted.keys
-    printfn "Modified: %A" directorychanges.Modified.keys
-    return ()
-  }
-
-[<EntryPoint>]
-let main _ =
-  async {
-    do! watch someActionOnChanges 1000 watcher
-    return 0
-  }
-  |> Async.RunSynchronously
-```
-
-Example 2. Using Excel file
-
-```fs
-module App
+module Example
 
 open System
-open FSharp.Interop.Excel
-
-
-type WatcherGrid = ExcelFile<FileName="../Example/my_grid.xlsx",HasHeaders=true,ForceString=true> // use excel file
-
-let myGrid = new WatcherGrid()
-
-
 open FWatcher
 
+module SimpleExample =
 
-let getWatchers (grid: WatcherGrid) =
-  grid.Data // get grid data
-  |> Seq.filter (fun row -> not (String.IsNullOrWhiteSpace row.Path || String.IsNullOrWhiteSpace row.Pattern)) // get non empty rows
-  |> Seq.map (fun row -> { Path = row.Path; Pattern = row.Pattern }) // map to Watcher type
-  |> Seq.toList // convert to list
+  let watcher = { Path = "../Example/watching"; Pattern = ".*.txt"}
 
-let startWatchers action grid =
-  async {
-    try
-      return!
-        grid
-        |> getWatchers // get Watcher types
-        |> List.map (watch action 500) // run watch function with half second comparison intervals
-        |> Async.Parallel // run watchers in parallel
-        |> Async.Ignore // ignore results as they should never return unless they're stopped or errors occur
-    with ex -> printfn $"%s{ex.Message}"; return ()
-  }
+  let someActionOnChanges watcher directorychanges =
+    async {
+      printfn "Changes in %s" watcher.Path
+      printfn "Added: %A" directorychanges.Added.Keys
+      printfn "Deleted: %A" directorychanges.Deleted.Keys
+      printfn "Modified: %A" directorychanges.Modified.Keys
+      return ()
+    }
 
-let prettyPrint directoryChanges = // function that nicely prints directory changes
-  let prettyishPrint change keys =
-    let s = sprintf "\n\n\t%s\n\t\t%s\n" change
-    [ for k in keys do yield s k ]
-    |> String.concat ""
+module ExcelExample =
+  open FSharp.Interop.Excel
 
-  match directoryChanges with
-  | directoryChanges when directoryChanges.Count > 0 ->
-    printfn "\nChanges detected:%s%s%s"
-      (prettyishPrint "Added:" directoryChanges.Added.Keys)
-      (prettyishPrint "Deleted:" directoryChanges.Deleted.Keys)
-      (prettyishPrint "Modified:" directoryChanges.Modified.Keys)
-  | o -> ()
+  type WatcherGrid = ExcelFile<FileName = "../Example/my_grid.xlsx", HasHeaders = true, ForceString = true>
 
-let prettyPrintOnChanges watcher directoryChanges = // action performed on changes
-  async {
-    prettyPrint directoryChanges
-    return ()
-  }
+  let myGrid = new WatcherGrid()
+
+  let prettyPrint directoryChanges =
+    let prettyishPrint change keys =
+      let s = sprintf "\n\n\t%s\n\t\t%s\n" change
+      [ for k in keys do yield s k ]
+      |> String.concat ""
+
+    match directoryChanges with
+    | directoryChanges when directoryChanges.Count > 0 ->
+      printfn "\nChanges detected:%s%s%s"
+        (prettyishPrint "Added:" directoryChanges.Added.Keys)
+        (prettyishPrint "Deleted:" directoryChanges.Deleted.Keys)
+        (prettyishPrint "Modified:" directoryChanges.Modified.Keys)
+    | o -> ()
+
+  let prettyPrintOnChange watcher directoryChanges =
+    async {
+      prettyPrint directoryChanges
+      return ()
+    }
+
+  let startWatchers () =
+    async {
+      try
+        return!
+          myGrid.Data
+          |> Seq.filter (fun row -> not (String.IsNullOrWhiteSpace row.Path || String.IsNullOrWhiteSpace row.Pattern))
+          |> Seq.map (fun row -> { Path = row.Path; Pattern = row.Pattern })
+          |> Seq.map (watch prettyPrintOnChange 500)
+          |> Async.Parallel
+          |> Async.Ignore
+      with ex -> printfn $"%s{ex.Message}"; return ()
+    }
 
 [<EntryPoint>]
 let main _ =
   async {
-    do! startWatchers prettyPrintOnChanges myGrid
+    // do! FWatcher.watch SimpleExample.someActionOnChanges 1000 SimpleExample.watcher
+    do! ExcelExample.startWatchers ()
     return 0
   }
   |> Async.RunSynchronously
